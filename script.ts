@@ -32,21 +32,21 @@ async function saveCredentials(client: any) {
 }
 
 async function authorize() {
-  let client = await loadSavedCredentialsIfExist();
+  const client = await loadSavedCredentialsIfExist();
   if (client) {
     return client;
   }
-  client = await authenticate({
+  const OAuth2Client = await authenticate({
     scopes: SCOPES,
     keyfilePath: CREDENTIALS_PATH,
   });
-  if (client.credentials) {
+
+  if (OAuth2Client?.credentials) {
     await saveCredentials(client);
   }
-  return client;
-}
 
-const databaseId = Deno.env.get("NOTION_DATABASE_ID");
+  return OAuth2Client;
+}
 
 async function listEvents(auth: any) {
   const calendar = google.calendar({ version: "v3", auth });
@@ -70,6 +70,8 @@ async function listEvents(auth: any) {
 }
 
 authorize().then(listEvents).catch(console.error);
+
+const databaseId = Deno.env.get("NOTION_DATABASE_ID");
 
 const notion = new Client({
   auth: Deno.env.get("NOTION_TOKEN"),
