@@ -63,8 +63,8 @@ async function listEvents(auth: any) {
     return;
   }
   console.log("Upcoming 10 events:");
-  events.map((event: any, i: number) => {
-    const start = event.start.dateTime || event.start.date;
+  events.map((event, i) => {
+    const start = event?.start?.dateTime || event?.start?.date;
     console.log(`${start} - ${event.summary}`);
   });
 }
