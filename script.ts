@@ -71,17 +71,28 @@ async function listEvents(auth: any) {
 
 authorize().then(listEvents).catch(console.error);
 
-const databaseId = Deno.env.get("NOTION_DATABASE_ID");
+const databaseId = Deno.env.get("NOTION_DATABASE_ID") ?? "";
 
 const notion = new Client({
   auth: Deno.env.get("NOTION_TOKEN"),
 });
 
-const search = await notion.search({
-  filter: {
-    value: "database",
-    property: "object",
+const createPage = await notion.pages.create({
+  parent: {
+    database_id: databaseId,
+  },
+  properties: {
+    title: [
+      {
+        text: {
+          content: "New Event",
+        },
+      },
+    ],
+    Date: {
+      start: new Date().toISOString(),
+    },
   },
 });
 
-console.log(search.results[0]);
+console.log(createPage);
